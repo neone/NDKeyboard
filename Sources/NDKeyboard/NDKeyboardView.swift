@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct NDKeyboardView: View {
-    internal init(inputText: Binding<String>, returnText: Binding<String>, hideKeyboard: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, hideKeyboard: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         self.hideKeyboard = {}
