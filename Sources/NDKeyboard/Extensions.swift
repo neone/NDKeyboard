@@ -10,7 +10,7 @@ import SwiftUI
 import UIKit
 
 extension UIApplication {
-    func addTapGestureRecognizer() {
+    public func addTapGestureRecognizer() {
         guard let window = windows.first else { return }
         let tapGesture = UITapGestureRecognizer(target: window, action: #selector(UIView.endEditing))
         tapGesture.cancelsTouchesInView = false
@@ -28,7 +28,7 @@ extension UIApplication: UIGestureRecognizerDelegate {
 
 
 extension View {
-    func hideKeyboard() {
+    public func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
