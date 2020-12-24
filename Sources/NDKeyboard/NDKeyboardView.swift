@@ -49,7 +49,7 @@ public struct NDKeyboardView: View {
                 Spacer()
                 Button(action: {
                     returnText = inputText
-                    hideKeyboard()
+                    self.hideKeyboard()
                 }, label: {
                     Text("Done")
                         .foregroundColor(hightlightColor)
