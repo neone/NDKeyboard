@@ -1,5 +1,6 @@
-# ⌨️ Keyboard Observing
+# ⌨️ NDKeyboard Observing
 ### A Combine-based solution for observing and avoiding the keyboard in SwiftUI.
+### A Neone Fork
 
 ![Swift Support](https://img.shields.io/badge/Swift-5.1-orange.svg) 
 ![Platform](https://img.shields.io/badge/Platforms-iOS-lightgray.svg?style=flat)
