@@ -44,38 +44,34 @@ public struct NDKeyboardView: View {
                 
                 ForEach(quickEmojis, id: \.self) { symbol in
                     emojiButton(symbol)
-                    
                 }
                 
                 Spacer()
                 Button(action: {
                     returnText = inputText
-                    self.hideKeyboard()
+                    hideKeyboard()
                 }, label: {
                     Text("Done")
                         .foregroundColor(hightlightColor)
-                        
                 })
             }
             .padding(.top,8)
             .padding(.horizontal,12)
             .padding(.bottom,4)
             
-            
             HStack {
-                    TextField(defaultText, text: $inputText, onCommit: {
-                        returnText = inputText
-                    })
-                    .padding(.top,4)
-                    .padding(.horizontal,8)
-                    .padding(.bottom, 8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(textBackgrounColor))
-                    
-                    
-                    Spacer()
-                    
+                TextField(defaultText, text: $inputText, onCommit: {
+                    returnText = inputText
+                })
+                .padding(.top,4)
+                .padding(.horizontal,8)
+                .padding(.bottom, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(textBackgrounColor))
+                
+                Spacer()
+                
                 if !inputText.isEmpty {
                     Button(
                         action: { self.inputText = "" },
