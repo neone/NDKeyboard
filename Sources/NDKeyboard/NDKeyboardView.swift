@@ -8,16 +8,24 @@
 import SwiftUI
 
 public struct NDKeyboardView: View {
+    internal init(inputText: Binding<String>, returnText: Binding<String>, hideKeyboard: @escaping () -> Void) {
+        self._inputText = inputText
+        self._returnText = returnText
+        self.hideKeyboard = {}
+        
+    }
+    
     @Binding var inputText: String
     @Binding var returnText: String
     
-    @State var quickEmojis: [String]
-    @State var doneButtonLabel: String
+    var quickEmojis: [String] = []
     
-    @State var defaultText: String
-    @State var hightlightColor: Color
-    @State var viewBackgroundColor: Color
-    @State var textBackgrounColor: Color
+    var doneButtonLabel: String = ""
+    var defaultText: String = ""
+    
+    var hightlightColor: Color = Color(.systemBlue)
+    var viewBackgroundColor: Color = Color(.secondarySystemBackground)
+    var textBackgrounColor: Color = Color(.systemBackground)
     
     var hideKeyboard: () -> Void
     
@@ -86,10 +94,10 @@ public struct NDKeyboardView: View {
 
 struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
-        NDKeyboardView(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground), hideKeyboard: {})
+        NDKeyboardView(inputText:  .constant(""), returnText:  .constant(""), hideKeyboard: {})
             .previewLayout(PreviewLayout.sizeThatFits)
         
-        NDKeyboardView(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground), hideKeyboard: {})
+        NDKeyboardView(inputText: .constant(""), returnText:  .constant(""), hideKeyboard: {})
             .previewLayout(PreviewLayout.sizeThatFits)
             .colorScheme(.dark)
     }
