@@ -8,12 +8,10 @@
 import SwiftUI
 
 public struct NDKeyboardView: View {
-    public init(inputText: Binding<String>, returnText: Binding<String>, quickEmojis: [String], hideKeyboard: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, quickEmojis: [String]) {
         self._inputText = inputText
         self._returnText = returnText
         self.quickEmojis = quickEmojis
-        self.hideKeyboard = {}
-        
     }
     
     @Binding var inputText: String
@@ -28,7 +26,7 @@ public struct NDKeyboardView: View {
     var viewBackgroundColor: Color = Color(.secondarySystemBackground)
     var textBackgrounColor: Color = Color(.systemBackground)
     
-    var hideKeyboard: () -> Void
+    var hideKeyboard: () -> Void = {}
     
     func emojiButton(_ emoji: String) -> Button<Text> {
         Button {
@@ -91,10 +89,10 @@ public struct NDKeyboardView: View {
 
 struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
-        NDKeyboardView(inputText:  .constant(""), returnText:  .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"] , hideKeyboard: {})
+        NDKeyboardView(inputText:  .constant(""), returnText:  .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"])
             .previewLayout(PreviewLayout.sizeThatFits)
         
-        NDKeyboardView(inputText:  .constant(""), returnText:  .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"] , hideKeyboard: {})
+        NDKeyboardView(inputText:  .constant(""), returnText:  .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"])
             .previewLayout(PreviewLayout.sizeThatFits)
             .colorScheme(.dark)
     }
