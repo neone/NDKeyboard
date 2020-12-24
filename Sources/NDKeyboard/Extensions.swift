@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 import UIKit
 
-extension UIApplication {
-    public func addTapGestureRecognizer() {
+public extension UIApplication {
+    func addTapGestureRecognizer() {
         guard let window = windows.first else { return }
         let tapGesture = UITapGestureRecognizer(target: window, action: #selector(UIView.endEditing))
         tapGesture.cancelsTouchesInView = false
@@ -18,7 +18,7 @@ extension UIApplication {
         tapGesture.name = "MyTapGesture"
         window.addGestureRecognizer(tapGesture)
     }
- }
+}
 
 extension UIApplication: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -27,8 +27,8 @@ extension UIApplication: UIGestureRecognizerDelegate {
 }
 
 
-extension View {
-    public func hideKeyboard() {
+public extension View {
+    func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
