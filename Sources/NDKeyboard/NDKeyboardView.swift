@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NDKeyboardView: View {
+public struct NDKeyboardView: View {
     @Binding var inputText: String
     @Binding var returnText: String
     
@@ -29,7 +29,7 @@ struct NDKeyboardView: View {
         }
     }
     
-    var body: some View {
+    public var body: some View {
         VStack(spacing:0) {
             HStack(alignment: .center) {
                 
@@ -84,7 +84,7 @@ struct NDKeyboardView: View {
     }
 }
 
-struct NDKeyboard_Previews: PreviewProvider {
+struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         NDKeyboardView(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground), hideKeyboard: {})
             .previewLayout(PreviewLayout.sizeThatFits)
