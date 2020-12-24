@@ -86,10 +86,10 @@ struct NDKeyboardView: View {
 
 struct NDKeyboard_Previews: PreviewProvider {
     static var previews: some View {
-        NDKeyboardView(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground))
+        NDKeyboardView(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground), hideKeyboard: {})
             .previewLayout(PreviewLayout.sizeThatFits)
         
-        NDKeyboardView(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground))
+        NDKeyboardView(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground), hideKeyboard: {})
             .previewLayout(PreviewLayout.sizeThatFits)
             .colorScheme(.dark)
     }
