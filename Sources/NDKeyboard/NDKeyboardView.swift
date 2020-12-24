@@ -1,5 +1,5 @@
 //
-//  NDKeyboard.swift
+//  NDKeyboardView.swift
 //  NDKeyboardApp
 //
 //  Created by Dave Glassco on 12/24/20.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NDKeyboard: View {
+struct NDKeyboardView: View {
     @Binding var inputText: String
     @Binding var returnText: String
     
@@ -86,10 +86,10 @@ struct NDKeyboard: View {
 
 struct NDKeyboard_Previews: PreviewProvider {
     static var previews: some View {
-        NDKeyboard(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground))
+        NDKeyboardView(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground))
             .previewLayout(PreviewLayout.sizeThatFits)
         
-        NDKeyboard(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground))
+        NDKeyboardView(inputText: .constant(""), returnText: .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"], doneButtonLabel: "Done", defaultText: "Type Something", hightlightColor: Color.orange, viewBackgroundColor: Color(.secondarySystemBackground), textBackgrounColor: Color(.systemBackground))
             .previewLayout(PreviewLayout.sizeThatFits)
             .colorScheme(.dark)
     }
