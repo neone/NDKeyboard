@@ -1,5 +1,5 @@
 import XCTest
-@testable import KeyboardObserving
+@testable import NDKeyboardObserver
 
 final class KeyboardObservingTests: XCTestCase {
     func testExample() {
