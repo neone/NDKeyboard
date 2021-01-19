@@ -94,8 +94,5 @@ struct NDKeyboardView_Previews: PreviewProvider {
         NDKeyboardView(inputText:  .constant(""), returnText:  .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"] , hideKeyboard: {})
             .previewLayout(PreviewLayout.sizeThatFits)
         
-        NDKeyboardView(inputText:  .constant(""), returnText:  .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"] , hideKeyboard: {})
-            .previewLayout(PreviewLayout.sizeThatFits)
-            .colorScheme(.dark)
     }
 }
