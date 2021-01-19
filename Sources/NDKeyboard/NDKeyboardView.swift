@@ -40,6 +40,7 @@ public struct NDKeyboardView: View {
     
     public var body: some View {
         VStack(spacing:0) {
+            //Quick Emojis
             HStack(alignment: .center) {
                 
                 ForEach(quickEmojis, id: \.self) { symbol in
@@ -58,6 +59,7 @@ public struct NDKeyboardView: View {
             .padding(.top,8)
             .padding(.horizontal,12)
             .padding(.bottom,4)
+            .frame(height: 32)
             
             HStack {
                 TextField(defaultText, text: $inputText, onCommit: {
@@ -84,15 +86,12 @@ public struct NDKeyboardView: View {
                     )
                 }
             }.padding(8)
+            .frame(height: 48)
         }
         .background(viewBackgroundColor)
-    }
-}
-
-struct NDKeyboardView_Previews: PreviewProvider {
-    static var previews: some View {
-        NDKeyboardView(inputText:  .constant(""), returnText:  .constant(""), quickEmojis: ["👍", "😂", "❤️","😢","😡"] , hideKeyboard: {})
-            .previewLayout(PreviewLayout.sizeThatFits)
         
+        viewBackgroundColor
+            .edgesIgnoringSafeArea(.bottom)
+            .frame(height:2)
     }
 }
