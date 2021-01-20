@@ -18,6 +18,12 @@ public struct NDKeyboardView: View {
     
     @Binding var inputText: String
     @Binding var returnText: String
+    @State var isFirstResponder = false
+    
+    enum FirstResponders: Int {
+            case quickComment
+        }
+    @State var firstResponder: FirstResponders? = nil
     
     var quickEmojis: [String]
     
@@ -62,6 +68,8 @@ public struct NDKeyboardView: View {
             .frame(height: 32)
             
             HStack {
+                
+                
                 TextField(defaultText, text: $inputText, onCommit: {
                     returnText = inputText
                 })
