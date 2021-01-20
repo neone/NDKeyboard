@@ -28,6 +28,10 @@ extension UIApplication: UIGestureRecognizerDelegate {
 
 
 public extension View {
+    func showKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }

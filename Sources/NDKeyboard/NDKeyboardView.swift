@@ -8,9 +8,10 @@
 import SwiftUI
 
 public struct NDKeyboardView: View {
-    public init(inputText: Binding<String>, returnText: Binding<String>, quickEmojis: [String], hideKeyboard: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hideKeyboard: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
+        self._isFirstResponder = isFirstResponder
         self.quickEmojis = quickEmojis
         self.hideKeyboard = hideKeyboard
         
@@ -18,13 +19,9 @@ public struct NDKeyboardView: View {
     
     @Binding var inputText: String
     @Binding var returnText: String
-    @State var isFirstResponder = false
+    @Binding var isFirstResponder: Bool
     
-    enum FirstResponders: Int {
-            case quickComment
-        }
-    @State var firstResponder: FirstResponders? = nil
-    
+   
     var quickEmojis: [String]
     
     var doneButtonLabel: String = ""
@@ -68,18 +65,24 @@ public struct NDKeyboardView: View {
             .frame(height: 32)
             
             HStack {
+                CustomTextField(text: $inputText, returnText: $returnText, isFirstResponder: $isFirstResponder)
+                    .padding(.top,4)
+                    .padding(.horizontal,8)
+                    .padding(.bottom, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(textBackgrounColor))
                 
-                
-                TextField(defaultText, text: $inputText, onCommit: {
-                    returnText = inputText
-                })
-                .padding(.top,4)
-                .padding(.horizontal,8)
-                .padding(.bottom, 8)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(textBackgrounColor))
-                
+//                TextField(defaultText, text: $inputText, onCommit: {
+//                    returnText = inputText
+//                })
+//                .padding(.top,4)
+//                .padding(.horizontal,8)
+//                .padding(.bottom, 8)
+//                .background(
+//                    RoundedRectangle(cornerRadius: 8)
+//                        .fill(textBackgrounColor))
+//
                 Spacer()
                 
                 if !inputText.isEmpty {
