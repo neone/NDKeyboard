@@ -14,11 +14,13 @@ struct CustomTextField: UIViewRepresentable {
 
         @Binding var text: String
         @Binding var returnText: String
+        var hideKeyboard: () -> Void
         var didBecomeFirstResponder = false
 
-        init(text: Binding<String>, returnText: Binding<String>) {
+        init(text: Binding<String>, returnText: Binding<String>, hideKeyboard: @escaping ()->Void) {
             _text = text
             _returnText = returnText
+            self.hideKeyboard = hideKeyboard
         }
 
         func textFieldDidChangeSelection(_ textField: UITextField) {
@@ -28,6 +30,7 @@ struct CustomTextField: UIViewRepresentable {
         func textFieldShouldReturn(_ textField: UITextField) -> Bool {
             self.returnText = textField.text ?? ""
             textField.resignFirstResponder()
+            hideKeyboard()
             return true
         }
 
@@ -47,7 +50,7 @@ struct CustomTextField: UIViewRepresentable {
     }
 
     func makeCoordinator() -> CustomTextField.Coordinator {
-        return Coordinator(text: $text, returnText: $returnText)
+        return Coordinator(text: $text, returnText: $returnText, hideKeyboard: hideKeyboard)
     }
 
     func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<CustomTextField>) {
