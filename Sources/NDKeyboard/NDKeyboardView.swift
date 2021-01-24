@@ -65,7 +65,8 @@ public struct NDKeyboardView: View {
             .frame(height: 32)
             
             HStack {
-                CustomTextField(text: $inputText, returnText: $returnText, isFirstResponder: $isFirstResponder)
+                
+                CustomTextField(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, hideKeyboard: hideKeyboard)
                     .padding(.top,4)
                     .padding(.horizontal,8)
                     .padding(.bottom, 8)

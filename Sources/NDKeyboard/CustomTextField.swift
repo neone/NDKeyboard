@@ -39,6 +39,7 @@ struct CustomTextField: UIViewRepresentable {
     @Binding var text: String
     @Binding var returnText: String
     @Binding var isFirstResponder: Bool
+    var hideKeyboard: () -> Void
     
     var placeholder: String?
 
