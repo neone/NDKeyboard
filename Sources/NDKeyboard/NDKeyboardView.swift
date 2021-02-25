@@ -8,11 +8,14 @@
 import SwiftUI
 
 public struct NDKeyboardView: View {
-    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hideKeyboard: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hightlightColor: Color, viewBackgroundColor: Color, textBackgrounColor: Color, hideKeyboard: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         self._isFirstResponder = isFirstResponder
         self.quickEmojis = quickEmojis
+        self.hightlightColor = hightlightColor
+        self.viewBackgroundColor = viewBackgroundColor
+        self.textBackgrounColor = textBackgrounColor
         self.hideKeyboard = hideKeyboard
         
     }
@@ -27,9 +30,13 @@ public struct NDKeyboardView: View {
     var doneButtonLabel: String = ""
     var defaultText: String = ""
     
-    var hightlightColor: Color = Color(.systemBlue)
-    var viewBackgroundColor: Color = Color(.secondarySystemBackground)
-    var textBackgrounColor: Color = Color(.systemBackground)
+//    var hightlightColor: Color = Color(.systemBlue)
+//    var viewBackgroundColor: Color = Color(.secondarySystemBackground)
+//    var textBackgrounColor: Color = Color(.systemBackground)
+    
+    var hightlightColor: Color
+    var viewBackgroundColor: Color
+    var textBackgrounColor: Color
     
     var hideKeyboard: () -> Void
     
