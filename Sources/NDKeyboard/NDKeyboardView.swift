@@ -8,14 +8,15 @@
 import SwiftUI
 
 public struct NDKeyboardView: View {
-    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hightlightColor: Color, viewBackgroundColor: Color, textBackgrounColor: Color, hideKeyboard: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hightlightColor: Color, viewBackgroundColor: Color, textBackgroundColor: Color, shadowColor: Color, hideKeyboard: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         self._isFirstResponder = isFirstResponder
         self.quickEmojis = quickEmojis
         self.hightlightColor = hightlightColor
         self.viewBackgroundColor = viewBackgroundColor
-        self.textBackgrounColor = textBackgrounColor
+        self.textBackgroundColor = textBackgroundColor
+        self.shadowColor = shadowColor
         self.hideKeyboard = hideKeyboard
         
     }
@@ -30,13 +31,10 @@ public struct NDKeyboardView: View {
     var doneButtonLabel: String = ""
     var defaultText: String = ""
     
-//    var hightlightColor: Color = Color(.systemBlue)
-//    var viewBackgroundColor: Color = Color(.secondarySystemBackground)
-//    var textBackgrounColor: Color = Color(.systemBackground)
-    
     var hightlightColor: Color
     var viewBackgroundColor: Color
-    var textBackgrounColor: Color
+    var textBackgroundColor: Color
+    var shadowColor: Color
     
     var hideKeyboard: () -> Void
     
@@ -50,6 +48,10 @@ public struct NDKeyboardView: View {
     
     public var body: some View {
         VStack(spacing:0) {
+            viewBackgroundColor
+                .frame(height:2)
+                .shadow(color: shadowColor.opacity(0.6), radius: 5, x: 0, y: -5)
+            
             //Quick Emojis
             HStack(alignment: .center) {
                 
@@ -79,7 +81,8 @@ public struct NDKeyboardView: View {
                     .padding(.bottom, 8)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(textBackgrounColor))
+                            .fill(textBackgroundColor))
+                
                 
 //                TextField(defaultText, text: $inputText, onCommit: {
 //                    returnText = inputText
@@ -106,11 +109,22 @@ public struct NDKeyboardView: View {
                 }
             }.padding(8)
             .frame(height: 48)
+            
         }
         .background(viewBackgroundColor)
         
         viewBackgroundColor
             .edgesIgnoringSafeArea(.bottom)
             .frame(height:2)
+    }
+}
+
+
+struct NDKeyboardView_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack(spacing: 0.0) {
+            Spacer()
+            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), isFirstResponder: .constant(false), quickEmojis: ["👍", "😂", "❤️","😢","😡"], hightlightColor: Color.orange, viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), shadowColor: Color(.darkGray), hideKeyboard: {})
+        }
     }
 }
