@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct CustomTextField: UIViewRepresentable {
+struct NDCustomKeyboard: UIViewRepresentable {
 
     class Coordinator: NSObject, UITextFieldDelegate {
 
@@ -43,18 +43,18 @@ struct CustomTextField: UIViewRepresentable {
     
     var placeholder: String?
 
-    func makeUIView(context: UIViewRepresentableContext<CustomTextField>) -> UITextField {
+    func makeUIView(context: UIViewRepresentableContext<NDCustomKeyboard>) -> UITextField {
         let textField = UITextField(frame: .zero)
         textField.delegate = context.coordinator
         textField.placeholder = placeholder
         return textField
     }
 
-    func makeCoordinator() -> CustomTextField.Coordinator {
+    func makeCoordinator() -> NDCustomKeyboard.Coordinator {
         return Coordinator(text: $text, returnText: $returnText, hideKeyboard: hideKeyboard)
     }
 
-    func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<CustomTextField>) {
+    func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<NDCustomKeyboard>) {
         uiView.text = text
         if isFirstResponder && !context.coordinator.didBecomeFirstResponder  {
             uiView.becomeFirstResponder()

@@ -71,7 +71,7 @@ public struct NDKeyboardView: View {
             
             HStack {
                 
-                CustomTextField(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, hideKeyboard: hideKeyboard)
+                NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, hideKeyboard: hideKeyboard)
                     .padding(.top,4)
                     .padding(.horizontal,8)
                     .padding(.bottom, 8)
@@ -79,17 +79,6 @@ public struct NDKeyboardView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .fill(textBackgroundColor))
                 
-                
-//                TextField(defaultText, text: $inputText, onCommit: {
-//                    returnText = inputText
-//                })
-//                .padding(.top,4)
-//                .padding(.horizontal,8)
-//                .padding(.bottom, 8)
-//                .background(
-//                    RoundedRectangle(cornerRadius: 8)
-//                        .fill(textBackgrounColor))
-//
                 Spacer()
                 
                 if !inputText.isEmpty {
