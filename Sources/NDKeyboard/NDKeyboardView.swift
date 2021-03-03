@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct NDKeyboardView: View {
-    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hightlightColor: Color, viewBackgroundColor: Color, textBackgroundColor: Color, shadowColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hightlightColor: Color, viewBackgroundColor: Color, textBackgroundColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         self._isFirstResponder = isFirstResponder
@@ -16,7 +16,6 @@ public struct NDKeyboardView: View {
         self.hightlightColor = hightlightColor
         self.viewBackgroundColor = viewBackgroundColor
         self.textBackgroundColor = textBackgroundColor
-        self.shadowColor = shadowColor
         self.hideKeyboard = hideKeyboard
         self.returnMethod = returnMethod
         
@@ -35,7 +34,7 @@ public struct NDKeyboardView: View {
     var hightlightColor: Color
     var viewBackgroundColor: Color
     var textBackgroundColor: Color
-    var shadowColor: Color
+//    var shadowColor: Color
     
     var hideKeyboard: () -> Void
     var returnMethod: () -> Void
@@ -111,7 +110,7 @@ struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), isFirstResponder: .constant(false), quickEmojis: ["👍", "😂", "❤️","😢","😡"], hightlightColor: Color.orange, viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), shadowColor: Color(.darkGray), hideKeyboard: {}, returnMethod: {})
+            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), isFirstResponder: .constant(false), quickEmojis: ["👍", "😂", "❤️","😢","😡"], hightlightColor: Color.orange, viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), hideKeyboard: {}, returnMethod: {})
         }
     }
 }
