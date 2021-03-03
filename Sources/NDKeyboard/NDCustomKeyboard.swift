@@ -39,7 +39,9 @@ struct NDCustomKeyboard: UIViewRepresentable {
     @Binding var text: String
     @Binding var returnText: String
     @Binding var isFirstResponder: Bool
+    
     var hideKeyboard: () -> Void
+    var returnMethod: () -> Void
     
     var placeholder: String?
 

@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct NDKeyboardView: View {
-    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hightlightColor: Color, viewBackgroundColor: Color, textBackgroundColor: Color, shadowColor: Color, hideKeyboard: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hightlightColor: Color, viewBackgroundColor: Color, textBackgroundColor: Color, shadowColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         self._isFirstResponder = isFirstResponder
@@ -18,6 +18,7 @@ public struct NDKeyboardView: View {
         self.textBackgroundColor = textBackgroundColor
         self.shadowColor = shadowColor
         self.hideKeyboard = hideKeyboard
+        self.returnMethod = returnMethod
         
     }
     
@@ -37,6 +38,7 @@ public struct NDKeyboardView: View {
     var shadowColor: Color
     
     var hideKeyboard: () -> Void
+    var returnMethod: () -> Void
     
     func emojiButton(_ emoji: String) -> Button<Text> {
         Button {
@@ -71,7 +73,7 @@ public struct NDKeyboardView: View {
             
             HStack {
                 
-                NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, hideKeyboard: hideKeyboard)
+                NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
                     .padding(.top,4)
                     .padding(.horizontal,8)
                     .padding(.bottom, 8)
@@ -109,7 +111,7 @@ struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), isFirstResponder: .constant(false), quickEmojis: ["👍", "😂", "❤️","😢","😡"], hightlightColor: Color.orange, viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), shadowColor: Color(.darkGray), hideKeyboard: {})
+            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), isFirstResponder: .constant(false), quickEmojis: ["👍", "😂", "❤️","😢","😡"], hightlightColor: Color.orange, viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), shadowColor: Color(.darkGray), hideKeyboard: {}, returnMethod: {})
         }
     }
 }
