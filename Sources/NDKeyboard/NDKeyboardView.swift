@@ -48,10 +48,6 @@ public struct NDKeyboardView: View {
     
     public var body: some View {
         VStack(spacing:0) {
-            viewBackgroundColor
-                .frame(height:2)
-                .shadow(color: shadowColor.opacity(0.6), radius: 5, x: 0, y: -5)
-            
             //Quick Emojis
             HStack(alignment: .center) {
                 
