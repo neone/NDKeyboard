@@ -25,8 +25,7 @@ public struct NDKeyboardView: View {
     @Binding var inputText: String
     @Binding var returnText: String
     @Binding var isFirstResponder: Bool
-    
-   
+
     var quickEmojis: [String]
     
     var doneButtonLabel: String = ""
@@ -62,6 +61,7 @@ public struct NDKeyboardView: View {
                     returnText = inputText
                     returnMethod()
                     hideKeyboard()
+                    isFirstResponder = false
                 }, label: {
                     HStack {
                         Text("Send")
