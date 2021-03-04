@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SFSafeSymbols
 
 public struct NDKeyboardView: View {
     public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], hightlightColor: Color, viewBackgroundColor: Color, textBackgroundColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
@@ -59,10 +60,14 @@ public struct NDKeyboardView: View {
                 Spacer()
                 Button(action: {
                     returnText = inputText
-                    self.hideKeyboard()
+                    returnMethod()
+                    hideKeyboard()
                 }, label: {
-                    Text("Done")
-                        .foregroundColor(hightlightColor)
+                    HStack {
+                        Text("Send")
+                            .foregroundColor(hightlightColor)
+                        Image(systemName: SFSymbol.paperplane.rawValue)
+                    }
                 })
             }
             .padding(.top,8)
