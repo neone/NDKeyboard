@@ -9,10 +9,13 @@ import SwiftUI
 import SFSafeSymbols
 
 public struct NDKeyboardView: View {
-    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, quickEmojis: [String], showQuickEmojis: Bool, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], showQuickEmojis: Bool, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         self._isFirstResponder = isFirstResponder
+        self.showAddCommentImage = showAddCommentImage
+        self.addCommentImage = addCommentImage
+        self.addCommentColor = addCommentColor
         self.quickEmojis = quickEmojis
         self.showQuickEmojis = showQuickEmojis
         self.hightlightColor = hightlightColor
@@ -27,6 +30,10 @@ public struct NDKeyboardView: View {
     @Binding var returnText: String
     @Binding var isFirstResponder: Bool
     @State var showCustomBar: Bool = false
+    
+    var showAddCommentImage: Bool
+    var addCommentImage: Image?
+    var addCommentColor: Color?
     
     var quickEmojis: [String]
     var showQuickEmojis: Bool
@@ -74,11 +81,28 @@ public struct NDKeyboardView: View {
             }
             
             HStack {
-                NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
-                    .padding(.top,4)
-                    .padding(.horizontal,8)
-                    .padding(.bottom, 8)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
+               
+                
+                ZStack {
+                    NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
+                        .padding(.top,4)
+                        .padding(.horizontal,8)
+                        .padding(.bottom, 8)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
+                    
+                    if inputText.isEmpty && showAddCommentImage == true {
+                        if addCommentImage != nil {
+                            HStack {
+                                addCommentImage!
+                                    .resizable()
+                                    .foregroundColor(addCommentColor)
+                                    .frame(width: 28, height: 28)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 8)
+                        }
+                    }
+                }
                 
                 Spacer()
                 
@@ -109,7 +133,7 @@ struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), isFirstResponder: .constant(false), quickEmojis: ["👍", "😂", "❤️","😢","😡"], showQuickEmojis: false, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), hideKeyboard: {}, returnMethod: {})
+            NDKeyboardView(inputText: .constant(""), returnText: .constant(""), isFirstResponder: .constant(false), showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: ["👍", "😂", "❤️","😢","😡"], showQuickEmojis: false, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), hideKeyboard: {}, returnMethod: {})
         }
     }
 }
