@@ -14,31 +14,47 @@ struct NDCustomKeyboard: UIViewRepresentable {
 
         @Binding var text: String
         @Binding var returnText: String
+        @Binding var isFirstResponder: Bool
+        @Binding var showCustomBar: Bool
+        
         var hideKeyboard: () -> Void
-        var didBecomeFirstResponder = false
+        var returnMethod: () -> Void
 
-        init(text: Binding<String>, returnText: Binding<String>, hideKeyboard: @escaping ()->Void) {
+        init(text: Binding<String>, returnText: Binding<String>, isFirstResponder: Binding<Bool>, showCustomBar: Binding<Bool>, hideKeyboard: @escaping ()->Void, returnMethod: @escaping ()->Void) {
             _text = text
             _returnText = returnText
+            _isFirstResponder = isFirstResponder
+            _showCustomBar = showCustomBar
             self.hideKeyboard = hideKeyboard
+            self.returnMethod = returnMethod
         }
 
+        func textFieldDidBeginEditing(_ textField: UITextField) {
+            showCustomBar = true
+        }
+        
         func textFieldDidChangeSelection(_ textField: UITextField) {
             text = textField.text ?? ""
+        }
+        
+        func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+            showCustomBar = false
         }
         
         func textFieldShouldReturn(_ textField: UITextField) -> Bool {
             self.returnText = textField.text ?? ""
             textField.resignFirstResponder()
+            showCustomBar = false
             hideKeyboard()
+            returnMethod()
             return true
         }
-
     }
 
     @Binding var text: String
     @Binding var returnText: String
     @Binding var isFirstResponder: Bool
+    @Binding var showCustomBar: Bool
     
     var hideKeyboard: () -> Void
     var returnMethod: () -> Void
@@ -53,14 +69,14 @@ struct NDCustomKeyboard: UIViewRepresentable {
     }
 
     func makeCoordinator() -> NDCustomKeyboard.Coordinator {
-        return Coordinator(text: $text, returnText: $returnText, hideKeyboard: hideKeyboard)
+        return Coordinator(text: $text, returnText: $returnText, isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
     }
 
     func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<NDCustomKeyboard>) {
         uiView.text = text
-        if isFirstResponder && !context.coordinator.didBecomeFirstResponder  {
+        if isFirstResponder && !context.coordinator.isFirstResponder  {
             uiView.becomeFirstResponder()
-            context.coordinator.didBecomeFirstResponder = true
+            context.coordinator.isFirstResponder = true
         }
     }
 }
