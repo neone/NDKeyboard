@@ -56,7 +56,7 @@ public struct NDKeyboardView: View {
         showCustomBar = false
         isFirstResponder = false
     }
-
+    
     public var body: some View {
         VStack(spacing:0) {
             if showCustomBar {
@@ -81,28 +81,26 @@ public struct NDKeyboardView: View {
             }
             
             HStack {
-               
+//                if !showCustomBar && showAddCommentImage == true {
+//                    if addCommentImage != nil {
+//                        HStack {
+//                            Button(action: {
+//                                isFirstResponder = true
+//                            }, label: {
+//                                addCommentImage!
+//                                    .resizable()
+//                                    .foregroundColor(addCommentColor)
+//                                    .frame(width: 28, height: 28)})
+//                        }
+//                        .padding(.horizontal, 4)
+//                    }
+//                }
                 
-                ZStack {
-                    NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
-                        .padding(.top,4)
-                        .padding(.horizontal,8)
-                        .padding(.bottom, 8)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
-                    
-                    if inputText.isEmpty && showAddCommentImage == true {
-                        if addCommentImage != nil {
-                            HStack {
-                                addCommentImage!
-                                    .resizable()
-                                    .foregroundColor(addCommentColor)
-                                    .frame(width: 28, height: 28)
-                                Spacer()
-                            }
-                            .padding(.horizontal, 8)
-                        }
-                    }
-                }
+                NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
+                    .padding(.top,4)
+                    .padding(.horizontal,8)
+                    .padding(.bottom, 8)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
                 
                 Spacer()
                 
