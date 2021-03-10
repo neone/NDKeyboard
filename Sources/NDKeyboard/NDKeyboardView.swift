@@ -8,8 +8,14 @@
 import SwiftUI
 import SFSafeSymbols
 
+public enum CustomBarItems {
+    case attachments
+    case emoji
+    case none
+}
+
 public struct NDKeyboardView: View {
-    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], showQuickEmojis: Bool, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         self._isFirstResponder = isFirstResponder
@@ -17,7 +23,7 @@ public struct NDKeyboardView: View {
         self.addCommentImage = addCommentImage
         self.addCommentColor = addCommentColor
         self.quickEmojis = quickEmojis
-        self.showQuickEmojis = showQuickEmojis
+        self.customBarItems = customBarItems
         self.hightlightColor = hightlightColor
         self.returnButtonLabel = returnButtonLabel
         self.viewBackgroundColor = viewBackgroundColor
@@ -29,14 +35,15 @@ public struct NDKeyboardView: View {
     @Binding var inputText: String
     @Binding var returnText: String
     @Binding var isFirstResponder: Bool
-    @State var showCustomBar: Bool = false
+    @State var showCustomBar: Bool = true
+    var customBarItems: CustomBarItems
     
     var showAddCommentImage: Bool
     var addCommentImage: Image?
     var addCommentColor: Color?
     
     var quickEmojis: [String]
-    var showQuickEmojis: Bool
+    
     
     var doneButtonLabel: String = ""
     var defaultText: String = ""
@@ -59,71 +66,66 @@ public struct NDKeyboardView: View {
     
     public var body: some View {
         VStack(spacing:0) {
-            if showCustomBar {
-                HStack {
-                    if showQuickEmojis {
-                        QuickEmojiView(inputText: $inputText, quickEmojis: quickEmojis, hightlightColor: hightlightColor)
+            VStack(spacing:0) {
+                if showCustomBar {
+                    HStack {
+                        switch customBarItems {
+                        case .attachments:
+                            HStack{
+                                
+                            }
+                        case .emoji:
+                            QuickEmojiView(inputText: $inputText, quickEmojis: quickEmojis, hightlightColor: hightlightColor)
+                        case .none:
+                            EmptyView()
+                        }
+                        Spacer()
+                        
+                        Button(action: {
+                            doneAction()
+                        }, label: {
+                            HStack {
+                                Text(returnButtonLabel)
+                                    .foregroundColor(hightlightColor)
+                                Image(systemName: SFSymbol.paperplane.rawValue)
+                                    .foregroundColor(hightlightColor)
+                            }
+                        })
                     }
+                    .padding(.horizontal,12)
+                    .frame(height: 32)
+                }
+                
+                HStack {
+                    NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
+                        .padding(.top,4)
+                        .padding(.horizontal,8)
+                        .padding(.bottom, 8)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
+                    
                     Spacer()
                     
-                    Button(action: {
-                        doneAction()
-                    }, label: {
-                        HStack {
-                            Text(returnButtonLabel)
-                                .foregroundColor(hightlightColor)
-                            Image(systemName: SFSymbol.paperplane.rawValue)
-                        }
-                    })
+                    if !inputText.isEmpty {
+                        Button(
+                            action: { self.inputText = "" },
+                            label: {
+                                Image(systemName: SFSymbol.xCircleFill.rawValue)
+                                    .resizable()
+                                    .foregroundColor(Color(UIColor.opaqueSeparator))
+                                    .frame(width: 20, height: 20, alignment: .center)
+                            }
+                        )
+                    }
                 }
-                .padding(.horizontal,12)
-                .frame(height: 32)
+                .padding(8)
+                .frame(height: 48)
             }
+            .background(viewBackgroundColor)
             
-            HStack {
-//                if !showCustomBar && showAddCommentImage == true {
-//                    if addCommentImage != nil {
-//                        HStack {
-//                            Button(action: {
-//                                isFirstResponder = true
-//                            }, label: {
-//                                addCommentImage!
-//                                    .resizable()
-//                                    .foregroundColor(addCommentColor)
-//                                    .frame(width: 28, height: 28)})
-//                        }
-//                        .padding(.horizontal, 4)
-//                    }
-//                }
-                
-                NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
-                    .padding(.top,4)
-                    .padding(.horizontal,8)
-                    .padding(.bottom, 8)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
-                
-                Spacer()
-                
-                if !inputText.isEmpty {
-                    Button(
-                        action: { self.inputText = "" },
-                        label: {
-                            Image(systemName: SFSymbol.xCircleFill.rawValue)
-                                .resizable()
-                                .foregroundColor(Color(UIColor.opaqueSeparator))
-                                .frame(width: 20, height: 20, alignment: .center)
-                        }
-                    )
-                }
-            }
-            .padding(8)
-            .frame(height: 48)
+            viewBackgroundColor
+                .edgesIgnoringSafeArea(.bottom)
+                .frame(height:2)
         }
-        .background(viewBackgroundColor)
-        
-        viewBackgroundColor
-            .edgesIgnoringSafeArea(.bottom)
-            .frame(height:2)
     }
 }
 
@@ -131,7 +133,7 @@ struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant(""), returnText: .constant(""), isFirstResponder: .constant(false), showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: ["👍", "😂", "❤️","😢","😡"], showQuickEmojis: false, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), hideKeyboard: {}, returnMethod: {})
+            NDKeyboardView(inputText: .constant(""), returnText: .constant(""), isFirstResponder: .constant(false), showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: ["👍", "😂", "❤️","😢","😡"], customBarItems: .attachments, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), hideKeyboard: {}, returnMethod: {})
         }
     }
 }
