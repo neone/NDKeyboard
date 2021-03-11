@@ -9,8 +9,8 @@ import SwiftUI
 
 
 struct NDCustomKeyboard: UIViewRepresentable {
-
-    class Coordinator: NSObject, UITextFieldDelegate {
+    
+    class Coordinator: NSObject, UITextViewDelegate {
 
         @Binding var text: String
         @Binding var returnText: String
@@ -29,19 +29,19 @@ struct NDCustomKeyboard: UIViewRepresentable {
             self.returnMethod = returnMethod
         }
 
-        func textFieldDidBeginEditing(_ textField: UITextField) {
-            showCustomBar = true
-        }
+//        func textFieldDidBeginEditing(_ textField: UITextView) {
+//            showCustomBar = true
+//        }
+//        
+//        func textFieldDidChangeSelection(_ textField: UITextView) {
+//            text = textField.text ?? ""
+//        }
         
-        func textFieldDidChangeSelection(_ textField: UITextField) {
-            text = textField.text ?? ""
-        }
-        
-        func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        func textFieldDidEndEditing(_ textField: UITextView, reason: UITextField.DidEndEditingReason) {
             showCustomBar = false
         }
         
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        func textFieldShouldReturn(_ textField: UITextView) -> Bool {
             self.returnText = textField.text ?? ""
             textField.resignFirstResponder()
             showCustomBar = false
@@ -61,18 +61,26 @@ struct NDCustomKeyboard: UIViewRepresentable {
     
     var placeholder: String?
 
-    func makeUIView(context: UIViewRepresentableContext<NDCustomKeyboard>) -> UITextField {
-        let textField = UITextField(frame: .zero)
-        textField.delegate = context.coordinator
-        textField.placeholder = placeholder
-        return textField
+    func makeUIView(context: Context) -> UITextView {
+        let textView =  UITextView()
+        textView.delegate = context.coordinator
+        
+        textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        textView.isScrollEnabled = false
+        textView.isEditable = true
+        textView.isUserInteractionEnabled = true
+        textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        textView.text = placeholder
+        
+        return textView
     }
 
     func makeCoordinator() -> NDCustomKeyboard.Coordinator {
         return Coordinator(text: $text, returnText: $returnText, isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
     }
 
-    func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<NDCustomKeyboard>) {
+    func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
         if isFirstResponder && !context.coordinator.isFirstResponder  {
             uiView.becomeFirstResponder()
