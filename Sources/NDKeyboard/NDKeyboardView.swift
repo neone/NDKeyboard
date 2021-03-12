@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 import SFSafeSymbols
 
 public enum CustomBarItems {
@@ -14,96 +15,176 @@ public enum CustomBarItems {
     case none
 }
 
+public struct CustomBarButton {
+    public init(buttonImage: Image, buttonLabel: String? = nil, returnMethod: @escaping () -> Void) {
+        self.buttonImage = buttonImage
+        self.buttonLabel = buttonLabel
+        self.returnMethod = returnMethod
+    }
+    
+    public var buttonImage: Image
+    public var buttonLabel: String?
+    public var returnMethod: () -> Void
+}
+
+let testButtons = [
+    CustomBarButton(buttonImage: Image(systemName: "camera.fill"), returnMethod: {}),
+    CustomBarButton(buttonImage: Image(systemName: "photo.fill"), returnMethod: {}),
+    CustomBarButton(buttonImage: Image(systemName: "folder.fill"), returnMethod: {})
+]
+
+
 public struct NDKeyboardView: View {
-    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
+    
+    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, isFirstResponder:Binding<Bool>, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton]?, customBarLinkButton: CustomBarButton?, buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
-        self._isFirstResponder = isFirstResponder
+        _showCustomBar = State(initialValue: false)
+        _isFirstResponder = isFirstResponder
         self.showAddCommentImage = showAddCommentImage
         self.addCommentImage = addCommentImage
         self.addCommentColor = addCommentColor
         self.quickEmojis = quickEmojis
         self.customBarItems = customBarItems
+        self.customBarButtons = customBarButtons
+        self.customBarLinkButton = customBarLinkButton
+        self.buttonTint = buttonTint
+        self.viewWidth = viewWidth
         self.hightlightColor = hightlightColor
         self.returnButtonLabel = returnButtonLabel
         self.viewBackgroundColor = viewBackgroundColor
         self.textBackgroundColor = textBackgroundColor
-        self.hideKeyboard = hideKeyboard
         self.returnMethod = returnMethod
     }
     
     @Binding var inputText: String
     @Binding var returnText: String
+    @State var showCustomBar: Bool
     @Binding var isFirstResponder: Bool
-    @State var showCustomBar: Bool = true
-    var customBarItems: CustomBarItems
+    @State private var viewHeight: CGFloat = 40
     
+    var customBarItems: CustomBarItems
+    var customBarButtons: [CustomBarButton]?
+    var customBarLinkButton: CustomBarButton?
+    var buttonTint: Color
+    var viewWidth: CGFloat
     var showAddCommentImage: Bool
     var addCommentImage: Image?
     var addCommentColor: Color?
-    
     var quickEmojis: [String]
-    
-    
     var doneButtonLabel: String = ""
     var defaultText: String = ""
     var returnButtonLabel: String
-    
     var hightlightColor: Color
     var viewBackgroundColor: Color
     var textBackgroundColor: Color
-    
-    var hideKeyboard: () -> Void
     var returnMethod: () -> Void
     
-    func doneAction() {
+    func returnAction() {
         returnText = inputText
         returnMethod()
-        hideKeyboard()
         showCustomBar = false
-        isFirstResponder = false
+        //        isFirstResponder = false
+    }
+    
+    @State var textHeight: CGFloat = 0
+    
+    var textFieldHeight: CGFloat {
+        let minHeight: CGFloat = 32
+        let maxHeight: CGFloat = 70
+        
+        if textHeight < minHeight {
+            return minHeight
+        }
+        
+        if textHeight > maxHeight {
+            return maxHeight
+        }
+        
+        return textHeight
     }
     
     public var body: some View {
         VStack(spacing:0) {
             VStack(spacing:0) {
                 if showCustomBar {
-                    HStack {
-                        switch customBarItems {
-                        case .attachments:
-                            HStack{
+                    if let buttons = customBarButtons{
+                        HStack(alignment: .center) {
+                            ForEach(0..<buttons.count) { index in
+                                    Button(action: {
+                                        buttons[index].returnMethod()
+                                    }, label: {
+                                        VStack {
+                                            Spacer()
+                                                .frame(height: 10)
+                                            buttons[index].buttonImage
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 28, height:28)
+                                            .padding(.horizontal, 4)
+                                            .foregroundColor(buttonTint)
+                                        if let label = buttons[index].buttonLabel {
+                                            Text(label)
+                                        }
+                                    }
+                                })
+                            }
+                            
+                            if let linkButton = customBarLinkButton {
                                 
+                                Separator()
+                                VStack {
+                                    Spacer()
+                                    Button(action: {
+                                        
+                                    }, label: {
+                                        VStack {
+                                            linkButton.buttonImage
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 28, height:28)
+                                            .padding(.horizontal, 4)
+                                            .foregroundColor(buttonTint)
+                                        if let label = linkButton.buttonLabel {
+                                            Text(label)
+                                        }
+                                    }
+                                })
                             }
-                        case .emoji:
-                            QuickEmojiView(inputText: $inputText, quickEmojis: quickEmojis, hightlightColor: hightlightColor)
-                        case .none:
-                            EmptyView()
+                            }
+                            
+                            Spacer()
+                            
+                            //Done Button
+                            Button(action: {
+                                returnAction()
+                            }, label: {
+                                HStack(alignment: .center) {
+                                    Text(returnButtonLabel)
+                                        .foregroundColor(hightlightColor)
+                                    Image(systemName: SFSymbol.paperplane.rawValue)
+                                        .foregroundColor(hightlightColor)
+                                }
+                                .padding(.top,8)
+                            })
+                            .disabled(inputText.isEmpty ? true : false)
+                            
                         }
-                        Spacer()
-                        
-                        Button(action: {
-                            doneAction()
-                        }, label: {
-                            HStack {
-                                Text(returnButtonLabel)
-                                    .foregroundColor(hightlightColor)
-                                Image(systemName: SFSymbol.paperplane.rawValue)
-                                    .foregroundColor(hightlightColor)
-                            }
-                        })
+                        .padding(.horizontal,16)
+                        .frame(height: 36)
                     }
-                    .padding(.horizontal,12)
-                    .frame(height: 32)
+                } else {
+                    viewBackgroundColor
+                        .frame(height:4)
                 }
                 
                 HStack {
-                    NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
+                    DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar, isFirstResponder: $isFirstResponder)
                         .padding(.top,4)
                         .padding(.horizontal,8)
                         .padding(.bottom, 8)
                         .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
-                    
-                    Spacer()
+                        .frame(height: textFieldHeight)
                     
                     if !inputText.isEmpty {
                         Button(
@@ -118,7 +199,7 @@ public struct NDKeyboardView: View {
                     }
                 }
                 .padding(8)
-                .frame(height: 48)
+                .frame(minHeight: 48)
             }
             .background(viewBackgroundColor)
             
@@ -133,7 +214,7 @@ struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant(""), returnText: .constant(""), isFirstResponder: .constant(false), showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: ["👍", "😂", "❤️","😢","😡"], customBarItems: .attachments, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), hideKeyboard: {}, returnMethod: {})
+            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), showCustomBar: true, isFirstResponder: .constant(true), showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, customBarButtons: testButtons, customBarLinkButton: CustomBarButton(buttonImage: Image(systemName: "safari.fill"), returnMethod: {}), buttonTint: Color(.gray), viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
         }
     }
 }
@@ -161,5 +242,50 @@ struct QuickEmojiView: View {
         .padding(.top,8)
         .padding(.bottom,4)
         .frame(height: 32)
+    }
+}
+
+
+final class UserData: ObservableObject  {
+    let didChange = PassthroughSubject<UserData, Never>()
+    
+    var text = "" {
+        didSet {
+            didChange.send(self)
+        }
+    }
+    
+    init(text: String) {
+        self.text = text
+    }
+}
+
+struct MultilineTextView: UIViewRepresentable {
+    @Binding var text: String
+    
+    func makeUIView(context: Context) -> UITextView {
+        let view = UITextView()
+        view.isScrollEnabled = true
+        view.isEditable = true
+        view.isUserInteractionEnabled = true
+        view.font = UIFont.preferredFont(forTextStyle: .body)
+        view.backgroundColor = UIColor(Color(.secondarySystemGroupedBackground))
+        
+        return view
+    }
+    
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        uiView.text = text
+    }
+}
+
+struct Separator: View {
+    var body: some View {
+        VStack {
+            Spacer()
+            Color(.secondaryLabel)
+                .frame(width:2)
+                .padding(.vertical,4)
+        }
     }
 }
