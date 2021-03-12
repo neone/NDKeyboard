@@ -16,6 +16,7 @@ public enum CustomBarItems {
 }
 
 public struct NDKeyboardView: View {
+    
     public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, showCustomBar: Bool, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
@@ -40,24 +41,19 @@ public struct NDKeyboardView: View {
     @Binding var isFirstResponder: Bool
     @State var showCustomBar: Bool
     @State private var viewHeight: CGFloat = 40
-    var customBarItems: CustomBarItems
     
+    var customBarItems: CustomBarItems
     var viewWidth: CGFloat
     var showAddCommentImage: Bool
     var addCommentImage: Image?
     var addCommentColor: Color?
-    
     var quickEmojis: [String]
-    
-    
     var doneButtonLabel: String = ""
     var defaultText: String = ""
     var returnButtonLabel: String
-    
     var hightlightColor: Color
     var viewBackgroundColor: Color
     var textBackgroundColor: Color
-    
     var hideKeyboard: () -> Void
     var returnMethod: () -> Void
     
@@ -66,25 +62,25 @@ public struct NDKeyboardView: View {
         returnMethod()
         hideKeyboard()
         showCustomBar = false
-        isFirstResponder = false
+//        isFirstResponder = false
     }
     
     @State var textHeight: CGFloat = 0
     
     var textFieldHeight: CGFloat {
-            let minHeight: CGFloat = 30
-            let maxHeight: CGFloat = 70
-            
-            if textHeight < minHeight {
-                return minHeight
-            }
-            
-            if textHeight > maxHeight {
-                return maxHeight
-            }
-            
-            return textHeight
+        let minHeight: CGFloat = 30
+        let maxHeight: CGFloat = 70
+        
+        if textHeight < minHeight {
+            return minHeight
         }
+        
+        if textHeight > maxHeight {
+            return maxHeight
+        }
+        
+        return textHeight
+    }
     
     public var body: some View {
         VStack(spacing:0) {
@@ -122,15 +118,13 @@ public struct NDKeyboardView: View {
                 }
                 
                 HStack {
-                    
-                    
                     ZStack {
                         if inputText.isEmpty {
-                                        Text("Placeholder text")
-                                            .foregroundColor(Color(UIColor.placeholderText))
-                                            .padding(4)
-                                    }
-
+                            Text("Placeholder text")
+                                .foregroundColor(Color(UIColor.placeholderText))
+                                .padding(4)
+                        }
+                        
                         DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
                             .padding(.top,4)
                             .padding(.horizontal,8)
@@ -139,7 +133,6 @@ public struct NDKeyboardView: View {
                             .frame(height: textFieldHeight)
                     }
                     
-                    Spacer()
                     if !inputText.isEmpty {
                         Button(
                             action: { self.inputText = "" },
@@ -202,13 +195,13 @@ struct QuickEmojiView: View {
 
 final class UserData: ObservableObject  {
     let didChange = PassthroughSubject<UserData, Never>()
-
+    
     var text = "" {
         didSet {
             didChange.send(self)
         }
     }
-
+    
     init(text: String) {
         self.text = text
     }
@@ -216,7 +209,7 @@ final class UserData: ObservableObject  {
 
 struct MultilineTextView: UIViewRepresentable {
     @Binding var text: String
-
+    
     func makeUIView(context: Context) -> UITextView {
         let view = UITextView()
         view.isScrollEnabled = true
@@ -227,7 +220,7 @@ struct MultilineTextView: UIViewRepresentable {
         
         return view
     }
-
+    
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
     }
