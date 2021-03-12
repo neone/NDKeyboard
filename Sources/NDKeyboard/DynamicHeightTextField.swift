@@ -38,7 +38,7 @@ struct DynamicHeightTextField: UIViewRepresentable {
         if isFirstResponder && !context.coordinator.isFirstResponder  {
             uiView.becomeFirstResponder()
             context.coordinator.isFirstResponder = true
-        }
+        } 
     }
 
     

@@ -36,10 +36,11 @@ let testButtons = [
 
 public struct NDKeyboardView: View {
     
-    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton]?, customBarLinkButton: CustomBarButton?, buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, isFirstResponder:Binding<Bool>, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton]?, customBarLinkButton: CustomBarButton?, buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         _showCustomBar = State(initialValue: false)
+        _isFirstResponder = isFirstResponder
         self.showAddCommentImage = showAddCommentImage
         self.addCommentImage = addCommentImage
         self.addCommentColor = addCommentColor
@@ -175,7 +176,7 @@ public struct NDKeyboardView: View {
                 }
                 
                 HStack {
-                    DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar, isFirstResponder: <#Binding<Bool>#>)
+                    DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar, isFirstResponder: $isFirstResponder)
                         .padding(.top,4)
                         .padding(.horizontal,8)
                         .padding(.bottom, 8)
@@ -210,7 +211,7 @@ struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), showCustomBar: true, showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, customBarButtons: testButtons, customBarLinkButton: CustomBarButton(buttonImage: Image(systemName: "safari.fill"), returnMethod: {}), buttonTint: Color(.gray), viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
+            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), showCustomBar: true, isFirstResponder: .constant(true), showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, customBarButtons: testButtons, customBarLinkButton: CustomBarButton(buttonImage: Image(systemName: "safari.fill"), returnMethod: {}), buttonTint: Color(.gray), viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
         }
     }
 }
