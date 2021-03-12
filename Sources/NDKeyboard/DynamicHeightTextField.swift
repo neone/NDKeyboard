@@ -11,11 +11,7 @@ struct DynamicHeightTextField: UIViewRepresentable {
     @Binding var text: String
     @Binding var returnText: String
     @Binding var height: CGFloat
-    @Binding var isFirstResponder: Bool
     @Binding var showCustomBar: Bool
-    
-    var hideKeyboard: () -> Void
-    var returnMethod: () -> Void
     
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
@@ -39,39 +35,32 @@ struct DynamicHeightTextField: UIViewRepresentable {
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
         
-        if isFirstResponder && !context.coordinator.isFirstResponder  {
-            uiView.becomeFirstResponder()
-            context.coordinator.isFirstResponder = true
-        }
+//        if isFirstResponder && !context.coordinator.isFirstResponder  {
+//            uiView.becomeFirstResponder()
+//            context.coordinator.isFirstResponder = true
+//        }
     }
 
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(text: $text, returnText: $returnText, showCustomBar: $showCustomBar, isFirstResponder: $isFirstResponder, dynamicSizeTextField: self, hideKeyboard: hideKeyboard , returnMethod: returnMethod)
+        return Coordinator(text: $text, returnText: $returnText, showCustomBar: $showCustomBar, dynamicSizeTextField: self)
     }
     
     class Coordinator: NSObject, UITextViewDelegate, NSLayoutManagerDelegate {
         @Binding var text: String
         @Binding var returnText: String
-        @Binding var isFirstResponder: Bool
         @Binding var showCustomBar: Bool
-        
-        var hideKeyboard: () -> Void
-        var returnMethod: () -> Void
         
         var dynamicHeightTextField: DynamicHeightTextField
         
         weak var textView: UITextView?
         
         
-        init(text: Binding<String>, returnText: Binding<String>, showCustomBar: Binding<Bool>, isFirstResponder: Binding<Bool>, dynamicSizeTextField: DynamicHeightTextField, hideKeyboard: @escaping ()->Void, returnMethod: @escaping ()->Void) {
+        init(text: Binding<String>, returnText: Binding<String>, showCustomBar: Binding<Bool>, dynamicSizeTextField: DynamicHeightTextField) {
             _text = text
             _returnText = text
-            _isFirstResponder = isFirstResponder
             _showCustomBar = showCustomBar
             self.dynamicHeightTextField = dynamicSizeTextField
-            self.hideKeyboard = hideKeyboard
-            self.returnMethod = returnMethod
         }
         
         func textViewDidChange(_ textView: UITextView) {
@@ -88,8 +77,6 @@ struct DynamicHeightTextField: UIViewRepresentable {
             self.returnText = textView.text ?? ""
             textView.resignFirstResponder()
             showCustomBar = false
-            hideKeyboard()
-            returnMethod()
         }
         
         //converts new line into return??

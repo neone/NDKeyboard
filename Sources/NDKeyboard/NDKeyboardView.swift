@@ -17,10 +17,9 @@ public enum CustomBarItems {
 
 public struct NDKeyboardView: View {
     
-    public init(inputText: Binding<String>, returnText: Binding<String>, isFirstResponder:  Binding<Bool>, showCustomBar: Bool, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, hideKeyboard: @escaping () -> Void, returnMethod: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
-        self._isFirstResponder = isFirstResponder
         _showCustomBar = State(initialValue: false)
         self.showAddCommentImage = showAddCommentImage
         self.addCommentImage = addCommentImage
@@ -32,13 +31,11 @@ public struct NDKeyboardView: View {
         self.returnButtonLabel = returnButtonLabel
         self.viewBackgroundColor = viewBackgroundColor
         self.textBackgroundColor = textBackgroundColor
-        self.hideKeyboard = hideKeyboard
         self.returnMethod = returnMethod
     }
     
     @Binding var inputText: String
     @Binding var returnText: String
-    @Binding var isFirstResponder: Bool
     @State var showCustomBar: Bool
     @State private var viewHeight: CGFloat = 40
     
@@ -54,13 +51,11 @@ public struct NDKeyboardView: View {
     var hightlightColor: Color
     var viewBackgroundColor: Color
     var textBackgroundColor: Color
-    var hideKeyboard: () -> Void
     var returnMethod: () -> Void
     
     func doneAction() {
         returnText = inputText
         returnMethod()
-        hideKeyboard()
         showCustomBar = false
 //        isFirstResponder = false
     }
@@ -125,7 +120,7 @@ public struct NDKeyboardView: View {
                                 .padding(4)
                         }
                         
-                        DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
+                        DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar)
                             .padding(.top,4)
                             .padding(.horizontal,8)
                             .padding(.bottom, 8)
@@ -161,7 +156,7 @@ struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant(""), returnText: .constant(""), isFirstResponder: .constant(false), showCustomBar: true, showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: ["👍", "😂", "❤️","😢","😡"], customBarItems: .attachments, viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), hideKeyboard: {}, returnMethod: {})
+            NDKeyboardView(inputText: .constant(""), returnText: .constant(""), showCustomBar: true, showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
         }
     }
 }
