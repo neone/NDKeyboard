@@ -12,6 +12,7 @@ struct DynamicHeightTextField: UIViewRepresentable {
     @Binding var returnText: String
     @Binding var height: CGFloat
     @Binding var showCustomBar: Bool
+    @Binding var isFirstResponder: Bool
     
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
@@ -34,16 +35,21 @@ struct DynamicHeightTextField: UIViewRepresentable {
     
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
+        if isFirstResponder && !context.coordinator.isFirstResponder  {
+            uiView.becomeFirstResponder()
+            context.coordinator.isFirstResponder = true
+        }
     }
 
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(text: $text, returnText: $returnText, showCustomBar: $showCustomBar, dynamicSizeTextField: self)
+        return Coordinator(text: $text, returnText: $returnText, isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, dynamicSizeTextField: self)
     }
     
     class Coordinator: NSObject, UITextViewDelegate, NSLayoutManagerDelegate {
         @Binding var text: String
         @Binding var returnText: String
+        @Binding var isFirstResponder: Bool
         @Binding var showCustomBar: Bool
         
         var dynamicHeightTextField: DynamicHeightTextField
@@ -51,9 +57,10 @@ struct DynamicHeightTextField: UIViewRepresentable {
         weak var textView: UITextView?
         
         
-        init(text: Binding<String>, returnText: Binding<String>, showCustomBar: Binding<Bool>, dynamicSizeTextField: DynamicHeightTextField) {
+        init(text: Binding<String>, returnText: Binding<String>, isFirstResponder: Binding<Bool>, showCustomBar: Binding<Bool>, dynamicSizeTextField: DynamicHeightTextField) {
             _text = text
             _returnText = text
+            _isFirstResponder = isFirstResponder
             _showCustomBar = showCustomBar
             self.dynamicHeightTextField = dynamicSizeTextField
         }

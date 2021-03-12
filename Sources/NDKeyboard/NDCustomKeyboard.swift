@@ -11,6 +11,7 @@ struct NDCustomKeyboard: UIViewRepresentable {
     
     @Binding var text: String
     @Binding var returnText: String
+    @Binding var isFirstResponder: Bool
     @Binding var showCustomBar: Bool
     
     var placeholder: String?
@@ -33,25 +34,29 @@ struct NDCustomKeyboard: UIViewRepresentable {
 
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
-//        if isFirstResponder && !context.coordinator.isFirstResponder  {
-//            uiView.becomeFirstResponder()
-//            context.coordinator.isFirstResponder = true
-//        }
+        if isFirstResponder && !context.coordinator.isFirstResponder  {
+            uiView.becomeFirstResponder()
+            context.coordinator.isFirstResponder = true
+        } else {
+            uiView.resignFirstResponder()
+        }
     }
     
     func makeCoordinator() -> NDCustomKeyboard.Coordinator {
-        return Coordinator(text: $text, returnText: $returnText, showCustomBar: $showCustomBar)
+        return Coordinator(text: $text, returnText: $returnText, isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar)
     }
     
     class Coordinator: NSObject, UITextViewDelegate, NSLayoutManagerDelegate {
 
         @Binding var text: String
         @Binding var returnText: String
+        @Binding var isFirstResponder: Bool
         @Binding var showCustomBar: Bool
 
-        init(text: Binding<String>, returnText: Binding<String>, showCustomBar: Binding<Bool>) {
+        init(text: Binding<String>, returnText: Binding<String>, isFirstResponder: Binding<Bool>, showCustomBar: Binding<Bool>) {
             _text = text
             _returnText = returnText
+            _isFirstResponder = isFirstResponder
             _showCustomBar = showCustomBar
         }
         

@@ -59,6 +59,7 @@ public struct NDKeyboardView: View {
     @Binding var inputText: String
     @Binding var returnText: String
     @State var showCustomBar: Bool
+    @Binding var isFirstResponder: Bool
     @State private var viewHeight: CGFloat = 40
     
     var customBarItems: CustomBarItems
@@ -174,7 +175,7 @@ public struct NDKeyboardView: View {
                 }
                 
                 HStack {
-                    DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar)
+                    DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar, isFirstResponder: <#Binding<Bool>#>)
                         .padding(.top,4)
                         .padding(.horizontal,8)
                         .padding(.bottom, 8)
