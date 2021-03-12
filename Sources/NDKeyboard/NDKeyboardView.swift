@@ -155,6 +155,7 @@ public struct NDKeyboardView: View {
                             
                             Spacer()
                             
+                            //Done Button
                             Button(action: {
                                 returnAction()
                             }, label: {
@@ -166,6 +167,8 @@ public struct NDKeyboardView: View {
                                 }
                                 .padding(.top,8)
                             })
+                            .disabled(inputText.isEmpty ? true : false)
+                            
                         }
                         .padding(.horizontal,16)
                         .frame(height: 36)
