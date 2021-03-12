@@ -15,6 +15,18 @@ public enum CustomBarItems {
     case none
 }
 
+public struct CustomBarButton {
+    public init(buttonImage: Image, buttonLabel: String? = nil, returnMethod: @escaping () -> Void) {
+        self.buttonImage = buttonImage
+        self.buttonLabel = buttonLabel
+        self.returnMethod = returnMethod
+    }
+    
+    public var buttonImage: Image
+    public var buttonLabel: String?
+    public var returnMethod: () -> Void
+}
+
 public struct NDKeyboardView: View {
     
     public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
