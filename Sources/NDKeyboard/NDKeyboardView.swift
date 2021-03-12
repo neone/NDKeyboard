@@ -104,7 +104,7 @@ public struct NDKeyboardView: View {
         VStack(spacing:0) {
             VStack(spacing:0) {
                 if showCustomBar {
-                    HStack(alignment: .bottom) {
+                    HStack(alignment: .center) {
                         ForEach(0..<customBarButtons.count) { index in
                                 Button(action: {
                                     customBarButtons[index].returnMethod()
@@ -125,15 +125,17 @@ public struct NDKeyboardView: View {
                         }
                         
                         Spacer()
+                        
                         Button(action: {
                             doneAction()
                         }, label: {
-                            HStack {
+                            HStack(alignment: .center) {
                                 Text(returnButtonLabel)
                                     .foregroundColor(hightlightColor)
                                 Image(systemName: SFSymbol.paperplane.rawValue)
                                     .foregroundColor(hightlightColor)
                             }
+                            .padding(.top,8)
                         })
                     }
                     .padding(.horizontal,16)
