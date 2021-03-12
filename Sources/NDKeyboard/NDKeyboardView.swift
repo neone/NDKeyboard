@@ -39,7 +39,7 @@ public struct NDKeyboardView: View {
     public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton], buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
-        _showCustomBar = State(initialValue: true)
+        _showCustomBar = State(initialValue: false)
         self.showAddCommentImage = showAddCommentImage
         self.addCommentImage = addCommentImage
         self.addCommentColor = addCommentColor
@@ -115,7 +115,7 @@ public struct NDKeyboardView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 28, height:28)
-                                        .padding(.horizontal, 2)
+                                        .padding(.horizontal, 4)
                                         .foregroundColor(buttonTint)
                                     if let label = customBarButtons[index].buttonLabel {
                                         Text(label)
