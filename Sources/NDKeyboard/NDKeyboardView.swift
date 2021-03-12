@@ -36,7 +36,7 @@ let testButtons = [
 
 public struct NDKeyboardView: View {
     
-    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton], buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton]?, customBarLinkButton: CustomBarButton?, buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         _showCustomBar = State(initialValue: false)
@@ -46,6 +46,7 @@ public struct NDKeyboardView: View {
         self.quickEmojis = quickEmojis
         self.customBarItems = customBarItems
         self.customBarButtons = customBarButtons
+        self.customBarLinkButton = customBarLinkButton
         self.buttonTint = buttonTint
         self.viewWidth = viewWidth
         self.hightlightColor = hightlightColor
@@ -61,7 +62,8 @@ public struct NDKeyboardView: View {
     @State private var viewHeight: CGFloat = 40
     
     var customBarItems: CustomBarItems
-    var customBarButtons: [CustomBarButton]
+    var customBarButtons: [CustomBarButton]?
+    var customBarLinkButton: CustomBarButton?
     var buttonTint: Color
     var viewWidth: CGFloat
     var showAddCommentImage: Bool
@@ -76,7 +78,7 @@ public struct NDKeyboardView: View {
     var textBackgroundColor: Color
     var returnMethod: () -> Void
     
-    func doneAction() {
+    func returnAction() {
         returnText = inputText
         returnMethod()
         showCustomBar = false
@@ -104,43 +106,68 @@ public struct NDKeyboardView: View {
         VStack(spacing:0) {
             VStack(spacing:0) {
                 if showCustomBar {
-                    HStack(alignment: .center) {
-                        ForEach(0..<customBarButtons.count) { index in
-                                Button(action: {
-                                    customBarButtons[index].returnMethod()
-                                }, label: {
-                                    VStack {
-                                        Spacer()
-                                    customBarButtons[index].buttonImage
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 28, height:28)
-                                        .padding(.horizontal, 4)
-                                        .foregroundColor(buttonTint)
-                                    if let label = customBarButtons[index].buttonLabel {
-                                        Text(label)
+                    if let buttons = customBarButtons{
+                        HStack(alignment: .center) {
+                            ForEach(0..<buttons.count) { index in
+                                    Button(action: {
+                                        buttons[index].returnMethod()
+                                    }, label: {
+                                        VStack {
+                                            Spacer()
+                                                .frame(height: 10)
+                                            buttons[index].buttonImage
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 28, height:28)
+                                            .padding(.horizontal, 4)
+                                            .foregroundColor(buttonTint)
+                                        if let label = buttons[index].buttonLabel {
+                                            Text(label)
+                                        }
                                     }
+                                })
+                            }
+                            
+                            if let linkButton = customBarLinkButton {
+                                
+                                Separator()
+                                VStack {
+                                    Spacer()
+                                    Button(action: {
+                                        
+                                    }, label: {
+                                        VStack {
+                                            linkButton.buttonImage
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 28, height:28)
+                                            .padding(.horizontal, 4)
+                                            .foregroundColor(buttonTint)
+                                        if let label = linkButton.buttonLabel {
+                                            Text(label)
+                                        }
+                                    }
+                                })
+                            }
+                            }
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                returnAction()
+                            }, label: {
+                                HStack(alignment: .center) {
+                                    Text(returnButtonLabel)
+                                        .foregroundColor(hightlightColor)
+                                    Image(systemName: SFSymbol.paperplane.rawValue)
+                                        .foregroundColor(hightlightColor)
                                 }
+                                .padding(.top,8)
                             })
                         }
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            doneAction()
-                        }, label: {
-                            HStack(alignment: .center) {
-                                Text(returnButtonLabel)
-                                    .foregroundColor(hightlightColor)
-                                Image(systemName: SFSymbol.paperplane.rawValue)
-                                    .foregroundColor(hightlightColor)
-                            }
-                            .padding(.top,8)
-                        })
+                        .padding(.horizontal,16)
+                        .frame(height: 36)
                     }
-                    .padding(.horizontal,16)
-                    .frame(height: 36)
-//                    .background(Color(.blue))
                 } else {
                     viewBackgroundColor
                         .frame(height:4)
@@ -182,7 +209,7 @@ struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), showCustomBar: true, showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, customBarButtons: testButtons, buttonTint: Color(.gray), viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
+            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), showCustomBar: true, showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, customBarButtons: testButtons, customBarLinkButton: CustomBarButton(buttonImage: Image(systemName: "safari.fill"), returnMethod: {}), buttonTint: Color(.gray), viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
         }
     }
 }
@@ -244,5 +271,16 @@ struct MultilineTextView: UIViewRepresentable {
     
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
+    }
+}
+
+struct Separator: View {
+    var body: some View {
+        VStack {
+            Spacer()
+            Color(.secondaryLabel)
+                .frame(width:2)
+                .padding(.vertical,4)
+        }
     }
 }

@@ -34,11 +34,6 @@ struct DynamicHeightTextField: UIViewRepresentable {
     
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
-        
-//        if isFirstResponder && !context.coordinator.isFirstResponder  {
-//            uiView.becomeFirstResponder()
-//            context.coordinator.isFirstResponder = true
-//        }
     }
 
     
