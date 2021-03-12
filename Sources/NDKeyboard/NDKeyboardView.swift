@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 import SFSafeSymbols
 
 public enum CustomBarItems {
@@ -38,6 +39,7 @@ public struct NDKeyboardView: View {
     @Binding var returnText: String
     @Binding var isFirstResponder: Bool
     @State var showCustomBar: Bool
+    @State private var viewHeight: CGFloat = 40
     var customBarItems: CustomBarItems
     
     var viewWidth: CGFloat
@@ -67,6 +69,23 @@ public struct NDKeyboardView: View {
         isFirstResponder = false
     }
     
+    @State var textHeight: CGFloat = 0
+    
+    var textFieldHeight: CGFloat {
+            let minHeight: CGFloat = 30
+            let maxHeight: CGFloat = 70
+            
+            if textHeight < minHeight {
+                return minHeight
+            }
+            
+            if textHeight > maxHeight {
+                return maxHeight
+            }
+            
+            return textHeight
+        }
+    
     public var body: some View {
         VStack(spacing:0) {
             VStack(spacing:0) {
@@ -82,8 +101,8 @@ public struct NDKeyboardView: View {
                         case .none:
                             EmptyView()
                         }
-                        Spacer()
                         
+                        Spacer()
                         Button(action: {
                             doneAction()
                         }, label: {
@@ -103,29 +122,24 @@ public struct NDKeyboardView: View {
                 }
                 
                 HStack {
-                    NDCustomKeyboard(text: $inputText, returnText: $returnText ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
-                        .padding(.top,4)
-                        .padding(.horizontal,8)
-                        .padding(.bottom, 8)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
-//                        .frame(width: viewWidth )
                     
-//                    TextField("Add a comment", text: $returnText, onEditingChanged: {_ in
-//                        showCustomBar = true
-//                    }, onCommit: {
-//                        returnMethod()
-//                        showCustomBar = false
-//                    })
-//                    .multilineTextAlignment(.leading)
-//                        .padding(.horizontal,8)
-//                        .padding(.vertical,4)
-//                        .background(Color(.secondarySystemGroupedBackground))
-//                        .cornerRadius(5.0)
-                        
-                        
+                    
+                    ZStack {
+                        if inputText.isEmpty {
+                                        Text("Placeholder text")
+                                            .foregroundColor(Color(UIColor.placeholderText))
+                                            .padding(4)
+                                    }
+
+                        DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight ,isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, hideKeyboard: hideKeyboard, returnMethod: returnMethod)
+                            .padding(.top,4)
+                            .padding(.horizontal,8)
+                            .padding(.bottom, 8)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
+                            .frame(height: textFieldHeight)
+                    }
                     
                     Spacer()
-                    
                     if !inputText.isEmpty {
                         Button(
                             action: { self.inputText = "" },
@@ -139,7 +153,7 @@ public struct NDKeyboardView: View {
                     }
                 }
                 .padding(8)
-                .frame(height: 48)
+                .frame(minHeight: 48)
             }
             .background(viewBackgroundColor)
             
@@ -182,5 +196,39 @@ struct QuickEmojiView: View {
         .padding(.top,8)
         .padding(.bottom,4)
         .frame(height: 32)
+    }
+}
+
+
+final class UserData: ObservableObject  {
+    let didChange = PassthroughSubject<UserData, Never>()
+
+    var text = "" {
+        didSet {
+            didChange.send(self)
+        }
+    }
+
+    init(text: String) {
+        self.text = text
+    }
+}
+
+struct MultilineTextView: UIViewRepresentable {
+    @Binding var text: String
+
+    func makeUIView(context: Context) -> UITextView {
+        let view = UITextView()
+        view.isScrollEnabled = true
+        view.isEditable = true
+        view.isUserInteractionEnabled = true
+        view.font = UIFont.preferredFont(forTextStyle: .body)
+        view.backgroundColor = UIColor(Color(.secondarySystemGroupedBackground))
+        
+        return view
+    }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        uiView.text = text
     }
 }
