@@ -27,12 +27,12 @@ extension UIApplication: UIGestureRecognizerDelegate {
 }
 
 
-//public extension View {
-//    func showSystemKeyboard() {
-//        UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
-//    }
-//    
-//    func hideSystemKeyboard() {
-//        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-//    }
-//}
+public extension View {
+    func showSystemKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+    func hideSystemKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
