@@ -167,7 +167,7 @@ public struct NDKeyboardView: View {
                                 }
                                 .padding(.top,8)
                             })
-                            .disabled(inputText.isEmpty ? true : false)
+//                            .disabled(inputText.isEmpty ? true : false)
                             
                         }
                         .padding(.horizontal,16)
