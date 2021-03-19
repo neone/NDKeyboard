@@ -13,6 +13,7 @@ struct DynamicHeightTextField: UIViewRepresentable {
     @Binding var height: CGFloat
     @Binding var showCustomBar: Bool
     @Binding var isFirstResponder: Bool
+    var placeholderText: String
     
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
@@ -29,7 +30,9 @@ struct DynamicHeightTextField: UIViewRepresentable {
         context.coordinator.textView = textView
         textView.delegate = context.coordinator
         textView.layoutManager.delegate = context.coordinator
-
+        
+        textView.placeholder = placeholderText
+        
         return textView
     }
     
@@ -68,6 +71,12 @@ struct DynamicHeightTextField: UIViewRepresentable {
         func textViewDidChange(_ textView: UITextView) {
             text = textView.text
             self.dynamicHeightTextField.text = textView.text
+            showCustomBar = true
+        }
+        
+        func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+            showCustomBar = true
+            return true
         }
         
         func textViewDidBeginEditing(_ textView: UITextView) {
