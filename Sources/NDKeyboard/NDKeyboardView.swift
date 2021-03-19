@@ -193,7 +193,7 @@ public struct NDKeyboardView: View {
                         avatarImage!
                             .frame(width: 32, height: 32, alignment: .center)
                             .mask(Circle())
-                            .overlay(Circle().stroke(Color(.white), lineWidth: 2))
+                            .overlay(Circle().stroke(Color(.white).opacity(0.69), lineWidth: 2))
                     }
                     
                     DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar, isFirstResponder: $isFirstResponder, placeholderText: placeholderText)
