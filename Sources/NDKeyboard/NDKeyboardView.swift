@@ -33,16 +33,21 @@ let testButtons = [
     CustomBarButton(buttonImage: Image(systemName: "folder.fill"), returnMethod: {})
 ]
 
+struct PreviewAvatarView: View {
+    var body: some View {
+       Image(systemName: "person.circle")
+        .resizable()
+    }
+}
 
 public struct NDKeyboardView: View {
     
-    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, isFirstResponder:Binding<Bool>, showAddCommentImage: Bool, addCommentImage: Image?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton]?, customBarLinkButton: CustomBarButton?, buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, isFirstResponder:Binding<Bool>, avatarImage: AnyView, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton]?, customBarLinkButton: CustomBarButton?, buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, placeholderText: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
         _showCustomBar = State(initialValue: false)
         _isFirstResponder = isFirstResponder
-        self.showAddCommentImage = showAddCommentImage
-        self.addCommentImage = addCommentImage
+        self.avatarImage = avatarImage
         self.addCommentColor = addCommentColor
         self.quickEmojis = quickEmojis
         self.customBarItems = customBarItems
@@ -52,6 +57,7 @@ public struct NDKeyboardView: View {
         self.viewWidth = viewWidth
         self.hightlightColor = hightlightColor
         self.returnButtonLabel = returnButtonLabel
+        self.placeholderText = placeholderText
         self.viewBackgroundColor = viewBackgroundColor
         self.textBackgroundColor = textBackgroundColor
         self.returnMethod = returnMethod
@@ -63,21 +69,25 @@ public struct NDKeyboardView: View {
     @Binding var isFirstResponder: Bool
     @State private var viewHeight: CGFloat = 40
     
+    var avatarImage: AnyView?
     var customBarItems: CustomBarItems
     var customBarButtons: [CustomBarButton]?
     var customBarLinkButton: CustomBarButton?
-    var buttonTint: Color
     var viewWidth: CGFloat
-    var showAddCommentImage: Bool
     var addCommentImage: Image?
-    var addCommentColor: Color?
     var quickEmojis: [String]
+    
     var doneButtonLabel: String = ""
     var defaultText: String = ""
     var returnButtonLabel: String
+    var placeholderText: String
+    
+    var buttonTint: Color
     var hightlightColor: Color
     var viewBackgroundColor: Color
     var textBackgroundColor: Color
+    var addCommentColor: Color?
+    
     var returnMethod: () -> Void
     
     func returnAction() {
@@ -167,7 +177,7 @@ public struct NDKeyboardView: View {
                                 }
                                 .padding(.top,8)
                             })
-                            .disabled(inputText.isEmpty ? true : false)
+//                            .disabled(inputText.isEmpty ? true : false)
                             
                         }
                         .padding(.horizontal,16)
@@ -178,11 +188,17 @@ public struct NDKeyboardView: View {
                         .frame(height:4)
                 }
                 
-                HStack {
-                    DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar, isFirstResponder: $isFirstResponder)
+                HStack(spacing:8) {
+                    if avatarImage != nil {
+                        avatarImage!
+                            .frame(width: 32, height: 32, alignment: .center)
+                            .mask(Circle())
+                            .overlay(Circle().stroke(Color(.white).opacity(0.69), lineWidth: 2))
+                    }
+                    
+                    DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar, isFirstResponder: $isFirstResponder, placeholderText: placeholderText)
                         .padding(.top,4)
                         .padding(.horizontal,8)
-                        .padding(.bottom, 8)
                         .background(RoundedRectangle(cornerRadius: 8).fill(textBackgroundColor))
                         .frame(height: textFieldHeight)
                     
@@ -211,10 +227,11 @@ public struct NDKeyboardView: View {
 }
 
 struct NDKeyboardView_Previews: PreviewProvider {
+    
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant("inputText"), returnText: .constant(""), showCustomBar: true, isFirstResponder: .constant(true), showAddCommentImage: true, addCommentImage: Image(systemName: "plus.circle"), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, customBarButtons: testButtons, customBarLinkButton: CustomBarButton(buttonImage: Image(systemName: "safari.fill"), returnMethod: {}), buttonTint: Color(.gray), viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
+            NDKeyboardView(inputText: .constant(""), returnText: .constant(""), showCustomBar: true, isFirstResponder: .constant(true), avatarImage: AnyView(PreviewAvatarView()), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, customBarButtons: testButtons, customBarLinkButton: CustomBarButton(buttonImage: Image(systemName: "safari.fill"), returnMethod: {}), buttonTint: Color(.gray), viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", placeholderText: "placeholderText", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
         }
     }
 }
