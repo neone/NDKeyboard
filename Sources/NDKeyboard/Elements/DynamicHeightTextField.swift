@@ -13,7 +13,18 @@ struct DynamicHeightTextField: UIViewRepresentable {
     @Binding var height: CGFloat
     @Binding var showCustomBar: Bool
     @Binding var isFirstResponder: Bool
-    var placeholderText: String
+    
+    var placeholderText: String?
+    
+    func resetUIView() -> Void {
+        let textView = UITextView()
+        textView.placeholder = placeholderText
+        
+        if let placeholderLabel = textView.viewWithTag(100) as? UILabel {
+            placeholderLabel.isHidden = false
+            placeholderLabel.text = placeholderText
+        }
+    }
     
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
@@ -36,17 +47,18 @@ struct DynamicHeightTextField: UIViewRepresentable {
         return textView
     }
     
-    func updateUIView(_ uiView: UITextView, context: Context) {
-        uiView.text = text
+    func updateUIView(_ textView: UITextView, context: Context) {
+        textView.text = text
+        
         if isFirstResponder && !context.coordinator.isFirstResponder  {
-            uiView.becomeFirstResponder()
+            textView.becomeFirstResponder()
             context.coordinator.isFirstResponder = true
         } 
     }
 
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(text: $text, returnText: $returnText, isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, dynamicSizeTextField: self)
+        return Coordinator(text: $text, returnText: $returnText, isFirstResponder: $isFirstResponder, showCustomBar: $showCustomBar, dynamicSizeTextField: self, placeholderText: placeholderText ?? "", resetUI: resetUIView)
     }
     
     class Coordinator: NSObject, UITextViewDelegate, NSLayoutManagerDelegate {
@@ -59,22 +71,35 @@ struct DynamicHeightTextField: UIViewRepresentable {
         
         weak var textView: UITextView?
         
+        var placeholderText: String
         
-        init(text: Binding<String>, returnText: Binding<String>, isFirstResponder: Binding<Bool>, showCustomBar: Binding<Bool>, dynamicSizeTextField: DynamicHeightTextField) {
+        var resetUI: () -> Void
+        
+        init(text: Binding<String>, returnText: Binding<String>, isFirstResponder: Binding<Bool>, showCustomBar: Binding<Bool>, dynamicSizeTextField: DynamicHeightTextField, placeholderText: String, resetUI: @escaping () -> Void) {
             _text = text
             _returnText = text
             _isFirstResponder = isFirstResponder
             _showCustomBar = showCustomBar
             self.dynamicHeightTextField = dynamicSizeTextField
+            self.placeholderText = placeholderText
+            self.resetUI = resetUI
         }
         
         func textViewDidChange(_ textView: UITextView) {
+            if let placeholderLabel = textView.viewWithTag(100) as! UILabel? {
+                placeholderLabel.isHidden = !self.text.isEmpty
+            }
+            
             text = textView.text
             self.dynamicHeightTextField.text = textView.text
             showCustomBar = true
         }
         
         func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+            if let placeholderLabel = textView.viewWithTag(100) as? UILabel {
+                placeholderLabel.isHidden = true
+            }
+            
             showCustomBar = true
             return true
         }
@@ -86,6 +111,7 @@ struct DynamicHeightTextField: UIViewRepresentable {
         
         func textViewDidEndEditing(_ textView: UITextView) {
             self.returnText = textView.text ?? ""
+            resetUI()
             textView.resignFirstResponder()
             showCustomBar = false
         }
