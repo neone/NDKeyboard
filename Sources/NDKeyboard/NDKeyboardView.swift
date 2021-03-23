@@ -34,20 +34,23 @@ let testButtons = [
 ]
 
 struct PreviewAvatarView: View {
+    var displayName: String
+    var avatarImage: Image?
+    var avatarSize: CGFloat
+    
     var body: some View {
-       Image(systemName: "person.circle")
-        .resizable()
+            NDAvatarView(size: avatarSize, displayName: displayName, image: avatarImage)
     }
 }
 
 public struct NDKeyboardView: View {
     
-    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Bool, isFirstResponder:Binding<Bool>, avatarImage: AnyView, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton]?, customBarLinkButton: CustomBarButton?, buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, placeholderText: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
+    public init(inputText: Binding<String>, returnText: Binding<String>, showCustomBar: Binding<Bool>, isFirstResponder:Binding<Bool>, avatarView: AnyView?, addCommentColor: Color?, quickEmojis: [String], customBarItems: CustomBarItems, customBarButtons: [CustomBarButton]?, customBarLinkButton: CustomBarButton?, buttonTint: Color, viewWidth: CGFloat, hightlightColor: Color, returnButtonLabel: String, placeholderText: String, viewBackgroundColor: Color, textBackgroundColor: Color, returnMethod: @escaping () -> Void) {
         self._inputText = inputText
         self._returnText = returnText
-        _showCustomBar = State(initialValue: false)
+        _showCustomBar = showCustomBar
         _isFirstResponder = isFirstResponder
-        self.avatarImage = avatarImage
+        self.avatarView = avatarView
         self.addCommentColor = addCommentColor
         self.quickEmojis = quickEmojis
         self.customBarItems = customBarItems
@@ -65,11 +68,11 @@ public struct NDKeyboardView: View {
     
     @Binding var inputText: String
     @Binding var returnText: String
-    @State var showCustomBar: Bool
+    @Binding var showCustomBar: Bool
     @Binding var isFirstResponder: Bool
     @State private var viewHeight: CGFloat = 40
     
-    var avatarImage: AnyView?
+    var avatarView: AnyView?
     var customBarItems: CustomBarItems
     var customBarButtons: [CustomBarButton]?
     var customBarLinkButton: CustomBarButton?
@@ -91,10 +94,10 @@ public struct NDKeyboardView: View {
     var returnMethod: () -> Void
     
     func returnAction() {
+        showCustomBar = false
         returnText = inputText
         returnMethod()
-        showCustomBar = false
-        //        isFirstResponder = false
+        isFirstResponder = false
     }
     
     @State var textHeight: CGFloat = 0
@@ -189,11 +192,9 @@ public struct NDKeyboardView: View {
                 }
                 
                 HStack(spacing:8) {
-                    if avatarImage != nil {
-                        avatarImage!
+                    if avatarView != nil {
+                        avatarView!
                             .frame(width: 32, height: 32, alignment: .center)
-                            .mask(Circle())
-                            .overlay(Circle().stroke(Color(.white).opacity(0.69), lineWidth: 2))
                     }
                     
                     DynamicHeightTextField(text: $inputText, returnText: $returnText, height: $textHeight, showCustomBar: $showCustomBar, isFirstResponder: $isFirstResponder, placeholderText: placeholderText)
@@ -231,7 +232,7 @@ struct NDKeyboardView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0.0) {
             Spacer()
-            NDKeyboardView(inputText: .constant(""), returnText: .constant(""), showCustomBar: true, isFirstResponder: .constant(true), avatarImage: AnyView(PreviewAvatarView()), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, customBarButtons: testButtons, customBarLinkButton: CustomBarButton(buttonImage: Image(systemName: "safari.fill"), returnMethod: {}), buttonTint: Color(.gray), viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", placeholderText: "placeholderText", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
+            NDKeyboardView(inputText: .constant(""), returnText: .constant(""), showCustomBar: .constant(true), isFirstResponder: .constant(true), avatarView: AnyView(PreviewAvatarView(displayName: "Dave Rave", avatarSize: 32)), addCommentColor: Color.orange , quickEmojis: [], customBarItems: .attachments, customBarButtons: testButtons, customBarLinkButton: CustomBarButton(buttonImage: Image(systemName: "safari.fill"), returnMethod: {}), buttonTint: Color(.gray), viewWidth: UIScreen.main.bounds.width, hightlightColor: Color.orange, returnButtonLabel: "Done", placeholderText: "placeholderText", viewBackgroundColor: Color(.tertiarySystemGroupedBackground), textBackgroundColor: Color(.systemBackground), returnMethod: {})
         }
     }
 }
@@ -303,6 +304,70 @@ struct Separator: View {
             Color(.secondaryLabel)
                 .frame(width:2)
                 .padding(.vertical,4)
+        }
+    }
+}
+
+
+private struct NDAvatarView: View {
+    public init(size: CGFloat, displayName: String, image: Image?) {
+        self.size = size
+        self.displayName = displayName
+        self.image = image
+    }
+    
+    var size: CGFloat
+    var displayName: String
+    var image: Image?
+    
+    var initials: String {
+        get {
+            guard displayName.count > 0 else {
+                return "displayName"
+            }
+            
+            var nameArray = displayName.components(separatedBy: " ")
+            
+            if let firstName = nameArray.first,
+               let lastName = nameArray.last
+               , nameArray.count > 2 {
+                nameArray = [firstName, lastName]
+            }
+            
+            var initials = ""
+            nameArray.forEach { element in
+                if let firstLetter = element.first {
+                    initials.append(firstLetter)
+                }
+            }
+            
+            return initials.uppercased()
+        }
+    }
+    
+    public var body: some View {
+        let multiplier = size / 100
+        
+        return VStack {
+            if image == nil {
+                ZStack {
+                    Circle()
+                        .frame(width: size, height: size)
+                        .foregroundColor(Color(.lightGray))
+                        .shadow(color: Color(.darkGray).opacity(0.5), radius: 5.0)
+                        .overlay(Circle().stroke(Color(.white), lineWidth: 2))
+                    Text(initials)
+                        .font(.system(size: 48 * multiplier, weight: .bold))
+                        .foregroundColor(.white)
+                }
+            } else {
+                image?.resizable()
+                    .clipShape(Circle())
+                    .frame(width: size, height: size)
+                    .foregroundColor(Color(.lightGray))
+                    .shadow(color: Color(.darkGray).opacity(0.5), radius: 5.0)
+                    .overlay(Circle().stroke(Color(.white), lineWidth: 2))
+            }
         }
     }
 }
