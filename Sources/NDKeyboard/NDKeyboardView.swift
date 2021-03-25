@@ -39,7 +39,7 @@ struct PreviewAvatarView: View {
     var avatarSize: CGFloat
     
     var body: some View {
-            NDAvatarView(size: avatarSize, displayName: displayName, image: avatarImage)
+            NDKeyboardAvatarView(size: avatarSize, displayName: displayName, image: avatarImage)
     }
 }
 
@@ -309,7 +309,7 @@ struct Separator: View {
 }
 
 
-private struct NDAvatarView: View {
+private struct NDKeyboardAvatarView: View {
     public init(size: CGFloat, displayName: String, image: Image?) {
         self.size = size
         self.displayName = displayName
